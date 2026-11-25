@@ -6,7 +6,7 @@ const createCategory = async (req: Request, res: Response) => {
     const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = req.body;
 
     if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
-        res.status(400).json({
+        return res.status(400).json({
             message: "Missing required fields"
         })
     }
@@ -27,6 +27,19 @@ const createCategory = async (req: Request, res: Response) => {
 // Get active categories
 
 // Get all categories
+const getAllCategories = async (req: Request, res: Response) => {
+    const categories = await CourseCategory.find();
+    if(categories.length === 0){
+        res.status(404).json({
+            message: "No categories found"
+        })
+    }
+
+    res.status(200).json({
+        message: "Categories fetched successfully",
+        data: categories
+    })
+}
 
 // Get category details
 
@@ -40,5 +53,6 @@ const createCategory = async (req: Request, res: Response) => {
 // Delete category
 
 export{
-    createCategory
+    createCategory,
+    getAllCategories
 }

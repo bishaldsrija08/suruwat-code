@@ -9,7 +9,7 @@ app.use(express.json());
 // Routes starts
 
 // Course category routes
-app.use("/api/admin", courseCategoryRoutes)
+app.use("/api/", courseCategoryRoutes)
 
 
 
