@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface ICourseCategory extends Document {
     categoryName: string;
@@ -7,6 +7,11 @@ export interface ICourseCategory extends Document {
     categoryImage?: string;
     categoryStatus: "active" | "inactive";
     categoryDisplayOrder: number;
+}
+
+enum CategoryStatus {
+    ACTIVE = "active",
+    INACTIVE = "inactive"
 }
 
 const courseCategorySchema = new Schema<ICourseCategory>({
@@ -31,12 +36,12 @@ const courseCategorySchema = new Schema<ICourseCategory>({
     },
     categoryImage: {
         type: String,
-        trim: true,
+        trim: true
     },
     categoryStatus: {
         type: String,
-        enum: ["active", "inactive"],
-        default: "active"
+        enum: Object.values(CategoryStatus),
+        default: CategoryStatus.ACTIVE
     },
     categoryDisplayOrder: {
         type: Number,

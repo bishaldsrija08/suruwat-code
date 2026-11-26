@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import CourseCategory from "../../models/courses/courseCategory.model";
+import { isValidObjectId } from "mongoose";
 
 // Create category
 const createCategory = async (req: Request, res: Response) => {
@@ -25,11 +26,25 @@ const createCategory = async (req: Request, res: Response) => {
 }
 
 // Get active categories
+const getActiveCategories = async (req: Request, res: Response) => {
+    const activeCategories = await CourseCategory.find({
+        categoryStatus: "active"
+    })
+    if (activeCategories.length === 0) {
+        return res.status(404).json({
+            message: "No active categories found"
+        })
+    }
+    res.status(200).json({
+        message: "Active categories fetched successfully",
+        data: activeCategories
+    })
+}
 
 // Get all categories
 const getAllCategories = async (req: Request, res: Response) => {
     const categories = await CourseCategory.find();
-    if(categories.length === 0){
+    if (categories.length === 0) {
         res.status(404).json({
             message: "No categories found"
         })
@@ -42,17 +57,117 @@ const getAllCategories = async (req: Request, res: Response) => {
 }
 
 // Get category details
-
+const getCategoryDetails = async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const isvalid = isValidObjectId(categoryId);
+    if (!isvalid) {
+        return res.status(400).json({
+            message: "Invalid category ID"
+        })
+    }
+    const category = await CourseCategory.findById(categoryId);
+    if (!category) {
+        return res.status(404).json({
+            message: "Category not found"
+        })
+    }
+    res.status(200).json({
+        message: "Category details fetched successfully",
+        data: category
+    })
+}
 
 // Update category
+const updateCategory = async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const isvalid = isValidObjectId(categoryId);
+    if (!isvalid) {
+        return res.status(400).json({
+            message: "Invalid category ID"
+        })
+    }
+
+    const category = await CourseCategory.findById(categoryId);
+    if (!category) {
+        return res.status(404).json({
+            message: "Category not found"
+        })
+    }
+    const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = req.body;
+
+    if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
+        return res.status(400).json({
+            message: "Missing required fields"
+        })
+    }
+    await CourseCategory.findByIdAndUpdate(categoryId, {
+        categoryName,
+        categoryDescription,
+        categorySlug,
+        categoryStatus,
+        categoryDisplayOrder
+    })
+    res.status(200).json({
+        message: "Category updated successfully"
+    })
+}
 
 
 // Activate/deactivate
+const toggleCategoryStatus = async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const isvalid = isValidObjectId(categoryId);
+    if (!isvalid) {
+        return res.status(400).json({
+            message: "Invalid category ID"
+        })
+    }
+    const category = await CourseCategory.findById(categoryId);
+    if (!category) {
+        return res.status(404).json({
+            message: "Category not found"
+        })
+    }
+    const newStatus = category.categoryStatus === "active" ? "inactive" : "active";
+    await CourseCategory.findByIdAndUpdate(categoryId, {
+        categoryStatus: newStatus
+    })
+    res.status(200).json({
+        message: "Category status updated successfully"
+    })
+}
 
 
 // Delete category
 
-export{
+// Use soft deactivation instead of permanently deleting categories. Before deleting a category, also check whether any courses are associated with it.
+
+const deleteCategory = async (req: Request, res: Response) => {
+    // Use soft deactivation instead of permanently deleting categories. Before deleting a category, also check whether any courses are associated with it.=> in futue
+    const { categoryId } = req.params;
+    const isvalid = isValidObjectId(categoryId);
+    if (!isvalid) {
+        return res.status(400).json({
+            message: "Invalid category ID"
+        })
+    }
+    const category = await CourseCategory.findByIdAndDelete(categoryId);
+    if (!category) {
+        return res.status(404).json({
+            message: "Category not found"
+        })
+    }
+    res.status(200).json({
+        message: "Category deleted successfully"
+    })
+}
+
+export {
     createCategory,
-    getAllCategories
+    getAllCategories,
+    getActiveCategories,
+    getCategoryDetails,
+    updateCategory,
+    toggleCategoryStatus,
+    deleteCategory
 }
