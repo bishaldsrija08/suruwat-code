@@ -30,6 +30,7 @@ interface ICourseCategory extends Document {
     courseStatus: CourseStatus;
     courseIsFeatured: boolean;
     courseDisplayOrder: number;
+    instructor: mongoose.Types.ObjectId;
 }
 
 const courseCategorySchema = new Schema<ICourseCategory>({
@@ -112,6 +113,11 @@ const courseCategorySchema = new Schema<ICourseCategory>({
     courseDisplayOrder: {
         type: Number,
         default: 0,
+    },
+    instructor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Instructor",
+        required: [true, "Instructor is required"]
     }
 }, {
     timestamps: true

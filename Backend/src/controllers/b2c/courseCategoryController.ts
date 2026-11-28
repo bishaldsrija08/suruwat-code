@@ -14,8 +14,10 @@ const createCategory = async (req: Request, res: Response) => {
         })
     }
 
-    const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = data;
+    const { categoryName, categoryDescription, categoryStatus, categoryDisplayOrder } = data;
     // const categoryImage =
+    // Generate a unique slug for the category based on the category name
+    const categorySlug = categoryName.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
 
     if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
         return res.status(400).json({
@@ -104,8 +106,10 @@ const updateCategory = async (req: Request, res: Response) => {
             message: "Category not found"
         })
     }
-    const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = req.body;
+    const { categoryName, categoryDescription, categoryStatus, categoryDisplayOrder } = req.body;
     // const categoryImage =
+    // Generate a unique slug for the category based on the category name
+    const categorySlug = categoryName.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
 
     if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
         return res.status(400).json({

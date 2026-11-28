@@ -7,13 +7,18 @@ import { courseSchema } from "../../utils/zod";
 // - Create a course
 const createCourse = async (req: Request, res: Response) => {
     const { error, data } = courseSchema.safeParse(req.body);
+
     if (error) {
         return res.status(400).json({
             message: "Validation error",
             error: error.issues
         })
     }
-    const { courseTitle, courseDescription, courseSlug, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+    const { courseTitle, courseDescription, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+
+    // generate a unique slug for the course based on the course title
+    const courseSlug = courseTitle.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
+
 
     if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategory || !courseAgeGroupMin || !courseDuration || !courseThumbnail) {
         return res.status(400).json({
@@ -73,7 +78,10 @@ const updateCourse = async (req: Request, res: Response) => {
         })
     }
 
-    const { courseTitle, courseDescription, courseSlug, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+    const { courseTitle, courseDescription, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+
+    // generate a unique slug for the course based on the course title
+    const courseSlug = courseTitle.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
 
     if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategory || !courseAgeGroupMin || !courseDuration || !courseThumbnail) {
         return res.status(400).json({
@@ -201,7 +209,7 @@ const filterAndSearchCourses = async (req: Request, res: Response) => {
         })
     }
     // Implement the filtering and searching logic here
-    
+
 }
 // - Manage course modules and learning outcomes.
 const manageCourseModulesAndLearningOutcomes = async (req: Request, res: Response) => {
@@ -278,7 +286,7 @@ const searchCourses = async (req: Request, res: Response) => {
             message: "Title query is required"
         })
     }
-    
+
     if (typeof title !== "string") {
         return res.status(400).json({
             message: "Title query must be a string"
