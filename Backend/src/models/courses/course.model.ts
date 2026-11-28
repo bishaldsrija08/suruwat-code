@@ -1,25 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface ICourseCategory extends Document {
-    courseTitle: string;
-    courseSlug: string;
-    courseShortDescription: string;
-    courseDescription: string;
-    courseCategory: mongoose.Types.ObjectId;
-    courseThumbnail: string;
-    courseAgeGroupMin: number;
-    courseAgeGroupMax: number;
-    courseDuration: string;
-    courseLevel: "Beginner" | "Intermediate" | "Advanced";
-    courseLearningOutcomes: string[];
-    coursePrerequisites: string[];
-    courseModules: string[];
-    coursePrice: number;
-    courseStatus: "draft" | "published" | "archived";
-    courseIsFeatured: boolean;
-    courseDisplayOrder: number;
-}
-
 // Enums
 export enum CourseLevel {
     BEGINNER = "beginner",
@@ -31,6 +11,25 @@ export enum CourseStatus {
     DRAFT = "draft",
     PUBLISHED = "published",
     ARCHIVED = "archived",
+}
+interface ICourseCategory extends Document {
+    courseTitle: string;
+    courseSlug: string;
+    courseShortDescription: string;
+    courseDescription: string;
+    courseCategory: mongoose.Types.ObjectId;
+    courseThumbnail: string;
+    courseAgeGroupMin: number;
+    courseAgeGroupMax: number;
+    courseDuration: string;
+    courseLevel: CourseLevel;
+    courseLearningOutcomes: string[];
+    coursePrerequisites: string[];
+    courseModules: string[];
+    coursePrice: number;
+    courseStatus: CourseStatus;
+    courseIsFeatured: boolean;
+    courseDisplayOrder: number;
 }
 
 const courseCategorySchema = new Schema<ICourseCategory>({

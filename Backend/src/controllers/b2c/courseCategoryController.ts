@@ -1,10 +1,21 @@
 import { Request, Response } from "express";
-import CourseCategory from "../../models/courses/courseCategory.model";
+import CourseCategory, { CategoryStatus } from "../../models/courses/courseCategory.model";
 import { isValidObjectId } from "mongoose";
+import { courseCategorySchema } from "../../utils/zod";
 
 // Create category
 const createCategory = async (req: Request, res: Response) => {
-    const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = req.body;
+    // Zod validataion
+    const { data, error } = courseCategorySchema.safeParse(req.body);
+    if (error) {
+        return res.status(400).json({
+            message: "Validation error",
+            error: error.issues
+        })
+    }
+
+    const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = data;
+    // const categoryImage =
 
     if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
         return res.status(400).json({
@@ -28,7 +39,7 @@ const createCategory = async (req: Request, res: Response) => {
 // Get active categories
 const getActiveCategories = async (req: Request, res: Response) => {
     const activeCategories = await CourseCategory.find({
-        categoryStatus: "active"
+        categoryStatus: CategoryStatus.ACTIVE
     })
     if (activeCategories.length === 0) {
         return res.status(404).json({
@@ -94,6 +105,7 @@ const updateCategory = async (req: Request, res: Response) => {
         })
     }
     const { categoryName, categoryDescription, categorySlug, categoryStatus, categoryDisplayOrder } = req.body;
+    // const categoryImage =
 
     if (!categoryName || !categoryDescription || !categorySlug || !categoryStatus || categoryDisplayOrder === undefined) {
         return res.status(400).json({
@@ -112,7 +124,6 @@ const updateCategory = async (req: Request, res: Response) => {
     })
 }
 
-
 // Activate/deactivate
 const toggleCategoryStatus = async (req: Request, res: Response) => {
     const { categoryId } = req.params;
@@ -128,7 +139,7 @@ const toggleCategoryStatus = async (req: Request, res: Response) => {
             message: "Category not found"
         })
     }
-    const newStatus = category.categoryStatus === "active" ? "inactive" : "active";
+    const newStatus = category.categoryStatus === CategoryStatus.ACTIVE ? CategoryStatus.INACTIVE : CategoryStatus.ACTIVE;
     await CourseCategory.findByIdAndUpdate(categoryId, {
         categoryStatus: newStatus
     })

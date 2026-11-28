@@ -1,17 +1,17 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export enum CategoryStatus {
+    ACTIVE = "active",
+    INACTIVE = "inactive"
+}
+
 export interface ICourseCategory extends Document {
     categoryName: string;
     categorySlug: string;
     categoryDescription: string;
     categoryImage?: string;
-    categoryStatus: "active" | "inactive";
+    categoryStatus: CategoryStatus;
     categoryDisplayOrder: number;
-}
-
-enum CategoryStatus {
-    ACTIVE = "active",
-    INACTIVE = "inactive"
 }
 
 const courseCategorySchema = new Schema<ICourseCategory>({

@@ -5,3 +5,6 @@ development server. The server restarts when TypeScript source files change.
 
 To run compiled JavaScript instead, run `npm run build` followed by
 `node dist/server.js`. Rebuild after changing source files.
+
+Search published courses by title with `GET /api/courses/search?title=...`.
+Title matching is case-insensitive.
