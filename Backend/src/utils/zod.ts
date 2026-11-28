@@ -15,7 +15,7 @@ export const courseSchema = z.object({
     courseTitle: z.string().min(1, "Course title is required"),
     courseShortDescription: z.string().optional(),
     courseDescription: z.string().optional(),
-    courseCategory: z.string().min(1, "Course category is required"),
+    courseCategoryId: z.string().min(1, "Course category is required"),
     courseThumbnail: z.string().optional(),
     courseAgeGroupMin: z.number().optional(),
     courseAgeGroupMax: z.number().optional(),
@@ -28,6 +28,7 @@ export const courseSchema = z.object({
     courseStatus: z.enum([CourseStatus.DRAFT, CourseStatus.PUBLISHED, CourseStatus.ARCHIVED]).optional(),
     courseIsFeatured: z.boolean().optional(),
     courseDisplayOrder: z.number().optional(),
+    courseInstructorId: z.string().min(1, "Course instructor is required")
 })
 
 export const instructorSchema = z.object({

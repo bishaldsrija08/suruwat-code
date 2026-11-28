@@ -14,18 +14,18 @@ const createCourse = async (req: Request, res: Response) => {
             error: error.issues
         })
     }
-    const { courseTitle, courseDescription, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+    const { courseTitle, courseDescription, courseCategoryId, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration, courseInstructorId } = data;
 
     // generate a unique slug for the course based on the course title
     const courseSlug = courseTitle.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
 
 
-    if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategory || !courseAgeGroupMin || !courseDuration || !courseThumbnail) {
+    if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategoryId || !courseAgeGroupMin || !courseDuration || !courseThumbnail || !courseInstructorId) {
         return res.status(400).json({
             message: "Missing required fields"
         })
     }
-    const isvalid = isValidObjectId(courseCategory);
+    const isvalid = isValidObjectId(courseCategoryId);
     if (!isvalid) {
         return res.status(400).json({
             message: "Invalid category ID"
@@ -35,7 +35,7 @@ const createCourse = async (req: Request, res: Response) => {
         courseTitle,
         courseDescription,
         courseSlug,
-        courseCategory,
+        courseCategoryId,
         courseLevel,
         courseThumbnail,
         courseAgeGroupMin,
@@ -48,7 +48,8 @@ const createCourse = async (req: Request, res: Response) => {
         coursePrerequisites,
         courseModules,
         coursePrice,
-        courseDuration
+        courseDuration,
+        courseInstructorId
     })
     res.status(201).json({
         message: "Course created successfully"
@@ -78,12 +79,12 @@ const updateCourse = async (req: Request, res: Response) => {
         })
     }
 
-    const { courseTitle, courseDescription, courseCategory, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration } = data;
+    const { courseTitle, courseDescription, courseCategoryId, courseLevel, courseThumbnail, courseAgeGroupMin, courseAgeGroupMax, courseStatus, courseIsFeatured, courseDisplayOrder, courseShortDescription, courseLearningOutcomes, coursePrerequisites, courseModules, coursePrice, courseDuration, courseInstructorId } = data;
 
     // generate a unique slug for the course based on the course title
     const courseSlug = courseTitle.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
 
-    if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategory || !courseAgeGroupMin || !courseDuration || !courseThumbnail) {
+    if (!courseTitle || !courseDescription || !courseSlug || !courseLevel || courseAgeGroupMin === undefined || courseAgeGroupMax === undefined || !courseDuration || !courseShortDescription || !coursePrice || !courseCategoryId || !courseAgeGroupMin || !courseDuration || !courseThumbnail || !courseInstructorId) {
         return res.status(400).json({
             message: "Missing required fields"
         })
@@ -100,7 +101,7 @@ const updateCourse = async (req: Request, res: Response) => {
         courseTitle,
         courseDescription,
         courseSlug,
-        courseCategory,
+        courseCategoryId,
         courseLevel,
         courseThumbnail,
         courseAgeGroupMin,
@@ -113,7 +114,8 @@ const updateCourse = async (req: Request, res: Response) => {
         coursePrerequisites,
         courseModules,
         coursePrice,
-        courseDuration
+        courseDuration,
+        courseInstructorId
     })
     res.status(200).json({
         message: "Course updated successfully"

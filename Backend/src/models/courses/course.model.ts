@@ -17,7 +17,7 @@ interface ICourseCategory extends Document {
     courseSlug: string;
     courseShortDescription: string;
     courseDescription: string;
-    courseCategory: mongoose.Types.ObjectId;
+    courseCategoryId: mongoose.Types.ObjectId;
     courseThumbnail: string;
     courseAgeGroupMin: number;
     courseAgeGroupMax: number;
@@ -30,7 +30,7 @@ interface ICourseCategory extends Document {
     courseStatus: CourseStatus;
     courseIsFeatured: boolean;
     courseDisplayOrder: number;
-    instructor: mongoose.Types.ObjectId;
+    courseInstructorId: mongoose.Types.ObjectId;
 }
 
 const courseCategorySchema = new Schema<ICourseCategory>({
@@ -58,7 +58,7 @@ const courseCategorySchema = new Schema<ICourseCategory>({
         trim: true,
         maxlength: [5000, "Description must not exceed 5000 characters"],
     },
-    courseCategory: {
+    courseCategoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "CourseCategory",
         required: [true, "Course category is required"],
@@ -114,7 +114,7 @@ const courseCategorySchema = new Schema<ICourseCategory>({
         type: Number,
         default: 0,
     },
-    instructor: {
+    courseInstructorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Instructor",
         required: [true, "Instructor is required"]
